@@ -41,7 +41,7 @@ except boto.exception.BotoServerError as e:
 
 access_key = response['create_access_key_response']['create_access_key_result']['access_key']
 print """Access Key: %s
-Secret Key. %s""" % (
+Secret Key: %s""" % (
         access_key['access_key_id'],
         access_key['secret_access_key']
         )
