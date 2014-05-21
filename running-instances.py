@@ -11,12 +11,10 @@ parser.add_argument(
         "-p",
         "--profile",
         required=False,
+        default="",
         help="The profile to use from .boto, if not provided the default credentials will be used."
         )
 args = parser.parse_args()
-
-if not args.profile:
-    args.profile = ""
 
 def get_region_instances(region, tables):
     x = PrettyTable(["Name", "Key-Name", "Type", "Placement", "Public-DNS", "Instance-ID", "State", "Launch Time"])
