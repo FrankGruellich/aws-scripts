@@ -52,9 +52,7 @@ def main():
         t.start()
 
     try:
-        for bucket in conn.get_all_buckets():
-            if bucket.name == args.bucket:
-                break
+        bucket = conn.get_bucket(args.bucket)
     except boto.exception.S3ResponseError as e:
         print "Error: {} ({}/{}).".format(e.message, e.status, e.error_code)
         return 1
