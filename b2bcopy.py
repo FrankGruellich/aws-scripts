@@ -26,7 +26,7 @@ def worker(queue):
             sleep(0.01*(2**wait-1)*random())
             try:
                 mp.copy_part_from_key(src_bucket_name, src_key_name, part_num, start, end)
-            except boto.exception.S3CopyError as e:
+            except (boto.exception.S3CopyError, boto.exception.BotoServerError) as e:
                 if wait < 8:
                     wait = wait + 1
                 print "FAIL {7}: {0}[{1}] ({2} .. {3}/{4}%/{5}): {6}".format(src_key_name, part_num, start, end, start*100/total_size, queue.qsize(), e, wait)
@@ -69,6 +69,7 @@ def main():
         key = key.strip()
         src_key = src_bucket.get_key(key)
         if dst_bucket.get_key(key):
+            print "{0} already in {1}".format(key, dst_bucket.name)
             continue
         if src_key:
             mp = dst_bucket.initiate_multipart_upload(src_key.name)
