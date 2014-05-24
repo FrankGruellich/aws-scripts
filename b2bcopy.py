@@ -8,6 +8,7 @@ from argparse import ArgumentParser, FileType
 from sys import exit
 from time import sleep
 from random import random
+from httplib import IncompleteRead
 
 def worker(queue):
     while True:
@@ -26,7 +27,7 @@ def worker(queue):
             sleep(0.01*(2**wait-1)*random())
             try:
                 mp.copy_part_from_key(src_bucket_name, src_key_name, part_num, start, end)
-            except (boto.exception.S3CopyError, boto.exception.BotoServerError) as e:
+            except (boto.exception.S3CopyError, boto.exception.BotoServerError, IncompleteRead) as e:
                 if wait < 8:
                     wait = wait + 1
                 print "FAIL {7}: {0}[{1}] ({2} .. {3}/{4}%/{5}): {6}".format(src_key_name, part_num, start, end, start*100/total_size, queue.qsize(), e, wait)
@@ -104,7 +105,7 @@ def main():
             mp.complete_upload()
             continue
         else:
-            print "Cannot find {0}".format(key)
+            print "Cannot find {0} in {1}.".format(key, src_bucket.name)
             continue
 
 if __name__ == "__main__":
