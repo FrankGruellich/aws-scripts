@@ -87,7 +87,7 @@ def main():
                         "src_key_name": src_key.name,
                         "part_num": int(chunk/chunk_size)+1,
                         "start": chunk,
-                        "end": chunk + chunk_size,
+                        "end": chunk + chunk_size - 1,
                         "total_size": src_key.size
                 })
             q.put(
