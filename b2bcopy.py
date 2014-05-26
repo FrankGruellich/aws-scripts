@@ -1,14 +1,16 @@
 #!/usr/bin/python
 
 from boto.s3.connection import S3Connection
-import boto.exception
 from Queue import Queue
 from threading import Thread
 from argparse import ArgumentParser, FileType
 from sys import exit
 from time import sleep
 from random import random
+
 from httplib import IncompleteRead
+from boto.exception import S3CopyError, BotoServerError
+from ssl import SSLError
 
 def worker(queue):
     while True:
@@ -27,7 +29,7 @@ def worker(queue):
             sleep(0.01*(2**wait-1)*random())
             try:
                 mp.copy_part_from_key(src_bucket_name, src_key_name, part_num, start, end)
-            except (boto.exception.S3CopyError, boto.exception.BotoServerError, IncompleteRead) as e:
+            except (S3CopyError, BotoServerError, IncompleteRead, SSLError) as e:
                 if wait < 8:
                     wait = wait + 1
                 print "FAIL {7}: {0}[{1}] ({2} .. {3}/{4}%/{5}): {6}".format(src_key_name, part_num, start, end, start*100/total_size, queue.qsize(), e, wait)
