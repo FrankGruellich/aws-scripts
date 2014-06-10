@@ -11,7 +11,7 @@ parser.add_argument(
         "-p",
         "--profile",
         required=False,
-        default="",
+        default=None,
         help="The profile to use from .boto, if not provided the default credentials will be used."
         )
 args = parser.parse_args()
