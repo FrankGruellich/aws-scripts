@@ -79,8 +79,8 @@ def main():
             chunk_size = src_key.size / 8000
             if chunk_size < 5*2**20:
                 chunk_size = 5*2**20
-            if chunk_size > 10*2**20:
-                chunk_size = 10*2**20
+            if chunk_size > 21*2**20:
+                chunk_size = 21*2**20
             for chunk in range(0, src_key.size - 1 - chunk_size, chunk_size):
                 q.put(
                     {
