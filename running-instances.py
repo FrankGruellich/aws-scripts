@@ -20,26 +20,27 @@ def get_region_instances(region, tables):
     x = PrettyTable(["Name", "Key-Name", "Type", "Placement", "Public-DNS", "Instance-ID", "State", "Launch Time"])
     x.padding_width = 1
     ec2 = boto.ec2.connect_to_region(region.name,aws_access_key_id=auth.aws_access_key_id,aws_secret_access_key=auth.aws_secret_access_key)
-    reservations = ec2.get_all_instances()
-    if reservations:
-        for r in reservations:
-            for i in r.instances:
-                try:
-                    instance_name = i.tags['Name']
-                except KeyError as e:
-                    instance_name = "N/A"
-                    pass
-                x.add_row([
-                    instance_name,
-                    i.key_name,
-                    i.instance_type,
-                    i.placement,
-                    i.public_dns_name,
-                    i.id,
-                    i.state,
-                    i.launch_time
-                    ])
-        tables[region.name] = x
+    if ec2:
+        reservations = ec2.get_all_instances()
+        if reservations:
+            for r in reservations:
+                for i in r.instances:
+                    try:
+                        instance_name = i.tags['Name']
+                    except KeyError as e:
+                        instance_name = "N/A"
+                        pass
+                    x.add_row([
+                        instance_name,
+                        i.key_name,
+                        i.instance_type,
+                        i.placement,
+                        i.public_dns_name,
+                        i.id,
+                        i.state,
+                        i.launch_time
+                        ])
+            tables[region.name] = x
     return
 
 conn = boto.ec2.connection.EC2Connection()
