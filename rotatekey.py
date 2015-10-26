@@ -10,12 +10,6 @@ def main():
     """The main function."""
     parser = argparse.ArgumentParser(description="Rotate Access Keys.")
     parser.add_argument(
-        "-u",
-        "--user",
-        required=True,
-        help="The IAM user to rotate the key for."
-    )
-    parser.add_argument(
         "-a",
         "--access_key_id",
         help="The access key to rotate and use for authentication."
@@ -37,9 +31,13 @@ def main():
         aws_access_key_id=args.access_key_id,
         aws_secret_access_key=args.secret_access_key
     )
+    get_user_response = iam.get_user()['get_user_response']
+    get_user_result = get_user_response['get_user_result']
+    user = get_user_result['user']
+    user_name = user['user_name']
 
     try:
-        response = iam.create_access_key(args.user)
+        response = iam.create_access_key(user_name)
     except boto.exception.BotoServerError as exception:
         print "Cannot create new keys: %s" % exception
         raise
@@ -58,7 +56,7 @@ def main():
 
     if ans == "yes":
         try:
-            iam.delete_access_key(args.access_key_id, args.user)
+            iam.delete_access_key(args.access_key_id, user_name)
         except boto.exception.BotoServerError as exception:
             print "Cannot remove old key: %s" % exception
             raise
