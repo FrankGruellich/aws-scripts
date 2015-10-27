@@ -44,8 +44,7 @@ def main():
 
     ak_response = response['create_access_key_response']
     access_key = ak_response['create_access_key_result']['access_key']
-    print """Access Key: %s
-    Secret Key: %s""" % (
+    print """Access Key:\t%s\nSecret Key:\t%s""" % (
         access_key['access_key_id'],
         access_key['secret_access_key']
     )
