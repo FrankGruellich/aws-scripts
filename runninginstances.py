@@ -27,12 +27,18 @@ def get_region_instances(region, tables, auth):
                         instance_name = i.tags['Name']
                     except KeyError:
                         instance_name = "N/A"
+                    if i.public_dns_name:
+                        accessname = i.public_dns_name
+                    elif i.ip_address:
+                        accessname = i.ip_address
+                    else:
+                        accessname = "n/a"
                     table.add_row([
                         instance_name,
                         i.key_name,
                         i.instance_type,
                         i.placement,
-                        i.public_dns_name,
+                        accessname,
                         i.private_ip_address,
                         i.id,
                         i.state,
